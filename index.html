@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de TV de 24 Horas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1, h2 {
+            color: #333;
+            text-align: center;
+        }
+        .canal {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            padding: 15px;
+        }
+        .programa {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+        .programa:last-child {
+            border-bottom: none;
+        }
+        .programa-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+        .hora {
+            font-weight: bold;
+            color: #3498db;
+            width: 60px;
+        }
+        .info {
+            flex-grow: 1;
+        }
+        .titulo {
+            font-weight: bold;
+        }
+        .episodio-info {
+            font-style: italic;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        .expandir-btn {
+            background: none;
+            border: none;
+            color: #3498db;
+            cursor: pointer;
+            font-size: 1.2em;
+        }
+        .sinopsis {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        #logo {
+            display: block;
+            margin: 0 auto 20px;
+            max-width: 200px;
+        }
+        #navegacion, #navegacion-dias {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        #navegacion button, #navegacion-dias button {
+            margin: 0 5px;
+            padding: 10px 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        #carrusel {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background-color: #ecf0f1;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .logo-carrusel {
+            max-width: 100px;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+        #fecha-actual {
+            text-align: center;
+            font-style: italic;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Guía de TV de 24 Horas</h1>
+    
+    <div id="carrusel">
+        <!-- Los logos de los canales se agregarán dinámicamente aquí -->
+    </div>
+
+    <img id="logo" src="/api/placeholder/200/100" alt="Logo del Canal">
+    
+    <h2 id="nombreCanal">Canal 1</h2>
+    <div id="fecha-actual"></div>
+    
+    <div id="navegacion-dias">
+        <!-- Los botones de los días se agregarán dinámicamente aquí -->
+    </div>
+    
+    <div id="programacion" class="canal">
+        <!-- La programación se llenará con JavaScript -->
+    </div>
+
+    <script>
+        const canales = [
+            { nombre: "Canal 1", logo: "/api/placeholder/100/50" },
+            { nombre: "Canal 2", logo: "/api/placeholder/100/50" },
+            { nombre: "Canal 3", logo: "/api/placeholder/100/50" },
+            { nombre: "Canal 4", logo: "/api/placeholder/100/50" },
+            { nombre: "Canal 5", logo: "/api/placeholder/100/50" }
+        ];
+
+        const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+
+        let canalActual = 0;
+        let diaActual = new Date().getDay();
+
+        function generarSinopsis() {
+            const sinopsis = [
+                "Un emocionante episodio lleno de giros inesperados.",
+                "Los protagonistas se enfrentan a su mayor desafío hasta ahora.",
+                "Una historia conmovedora que te mantendrá pegado a la pantalla.",
+                "Risas garantizadas en este divertido episodio.",
+                "Descubre los secretos más oscuros en este intenso capítulo.",
+                "Una aventura épica que no te puedes perder.",
+                "Momentos de tensión y emoción en este episodio crucial."
+            ];
+            return sinopsis[Math.floor(Math.random() * sinopsis.length)];
+        }
+
+        function generarProgramacion() {
+            const programas = [
+                "Noticias", "Serie de Drama", "Película", "Documental", 
+                "Programa de Cocina", "Reality Show", "Dibujos Animados", 
+                "Serie de Comedia", "Concurso", "Talk Show", "Deportes", 
+                "Música", "Telenovela", "Programa de Entrevistas"
+            ];
+
+            let programacion = "";
+            for (let hora = 0; hora < 24; hora++) {
+                const programa = programas[Math.floor(Math.random() * programas.length)];
+                const episodio = Math.floor(Math.random() * 20) + 1;
+                const temporada = Math.floor(Math.random() * 5) + 1;
+                const id = `programa-${hora}`;
+                
+                programacion += `
+                    <div class="programa">
+                        <div class="programa-header" onclick="toggleSinopsis('${id}')">
+                            <div class="hora">${hora.toString().padStart(2, '0')}:00</div>
+                            <div class="info">
+                                <div class="titulo">${programa}</div>
+                                <div class="episodio-info">Temporada ${temporada}, Episodio ${episodio}</div>
+                            </div>
+                            <button class="expandir-btn">▼</button>
+                        </div>
+                        <div id="${id}" class="sinopsis">${generarSinopsis()}</div>
+                    </div>
+                `;
+            }
+            return programacion;
+        }
+
+        function toggleSinopsis(id) {
+            const sinopsis = document.getElementById(id);
+            const boton = sinopsis.previousElementSibling.querySelector('.expandir-btn');
+            if (sinopsis.style.display === "block") {
+                sinopsis.style.display = "none";
+                boton.textContent = "▼";
+            } else {
+                sinopsis.style.display = "block";
+                boton.textContent = "▲";
+            }
+        }
+
+        function actualizarCanal() {
+            document.getElementById('nombreCanal').textContent = canales[canalActual].nombre;
+            document.getElementById('logo').src = canales[canalActual].logo;
+            document.getElementById('programacion').innerHTML = generarProgramacion();
+            actualizarFecha();
+        }
+
+        function cambiarCanal(index) {
+            canalActual = index;
+            actualizarCanal();
+        }
+
+        function actualizarFecha() {
+            const hoy = new Date();
+            const diaMostrado = new Date(hoy.setDate(hoy.getDate() - hoy.getDay() + diaActual));
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const fecha = diaMostrado.toLocaleDateString('es-ES', options);
+            document.getElementById('fecha-actual').textContent = fecha;
+        }
+
+        function cambiarDia(index) {
+            diaActual = index;
+            actualizarFecha();
+            document.getElementById('programacion').innerHTML = generarProgramacion();
+        }
+
+        function inicializarCarrusel() {
+            const carrusel = document.getElementById('carrusel');
+            canales.forEach((canal, index) => {
+                const img = document.createElement('img');
+                img.src = canal.logo;
+                img.alt = canal.nombre;
+                img.className = 'logo-carrusel';
+                img.onclick = () => cambiarCanal(index);
+                carrusel.appendChild(img);
+            });
+        }
+
+        function inicializarNavegacionDias() {
+            const navegacionDias = document.getElementById('navegacion-dias');
+            diasSemana.forEach((dia, index) => {
+                const button = document.createElement('button');
+                button.textContent = dia;
+                button.onclick = () => cambiarDia(index);
+                navegacionDias.appendChild(button);
+            });
+        }
+
+        // Inicializar la página
+        inicializarCarrusel();
+        inicializarNavegacionDias();
+        actualizarCanal();
+    </script>
+</body>
+</html>
