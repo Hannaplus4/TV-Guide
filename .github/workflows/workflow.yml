@@ -16,7 +16,7 @@ jobs:
 
       - name: Scrape Disney TV schedule
         run: |
-          python scrape_disney.py
+          python scrape_dsny.py
 
       - name: Store scraped data
         uses: actions/upload-artifact@v3
