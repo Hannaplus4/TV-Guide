@@ -1,0 +1,25 @@
+name: Web Scraping Disney TV
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Ejecutar diariamente a las 00:00
+
+jobs:
+  scrape-disney-tv:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          pip install requests beautifulsoup4
+
+      - name: Scrape Disney TV schedule
+        run: |
+          python scrape_disney.py
+
+      - name: Store scraped data
+        uses: actions/upload-artifact@v3
+        with:
+          name: disney-tv-schedule
+          path: ./programas_disney.txt
